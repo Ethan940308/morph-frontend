@@ -1,17 +1,23 @@
 <script setup>
 import { useLayout } from '@/layout/composables/layout';
 import { ref, onMounted } from 'vue';
-import TopbarWidget from '@/components/landing/TopbarWidget.vue';
+import TopbarWidget from '@/components/TopbarWidget.vue';
 import { useConstantStore } from '@/stores/constant';
 import { ContentService } from '@/services/ContentService';
-
-const { layoutConfig } = useLayout();
+import { ConstantService } from '@/services/ConstantService';
 
 const Constant = useConstantStore();
 
 const content = ref([]);
 
 onMounted(async () => {
+    if(Constant.isEmpty){
+        await ConstantService.index().then((response) => {
+        Constant.$patch({ data: response.data });
+    })
+    }
+    
+
     await ContentService.show(Constant.getConstantValue('content_type', 'CONTACT_US')).then((response) => {
         if(response.data){
             content.value = JSON.parse(response.data.content);

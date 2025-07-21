@@ -3,6 +3,8 @@ import { createRouter, createWebHistory } from 'vue-router';
 import { ConstantService } from '@/services/ConstantService';
 import { useUserStore } from '@/stores/user';
 import { useConstantStore } from '@/stores/constant';
+import { useRoute } from 'vue-router';
+import { computed } from 'vue';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -53,44 +55,18 @@ const router = createRouter({
                     component: () => import('@/views/pages/NotFound.vue')
                 }
             ]
-        },
-        {
-            path: '/auth/access',
-            name: 'accessDenied',
-            component: () => import('@/views/pages/auth/Access.vue')
-        },
-        {
-            path: '/auth/error',
-            name: 'error',
-            component: () => import('@/views/pages/auth/Error.vue')
-        },
-        {
-            path: '/auth/register',
-            name: 'register',
-            component: () => import('@/views/pages/auth/Register.vue')
-        },
-        {
-            path: '/:pathMatch(.*)*',
-            name: 'notfound',
-            component: () => import('@/views/pages/NotFound.vue')
         }
     ]
 });
 
 router.beforeEach(async (to, from, next) => {
     const User = useUserStore();
-    const Constant = useConstantStore();
     
     if (!User.isLoggedIn){
-        console.log('hi');
+        User.$reset();
     }
 
-    console.log('123123');
-    await ConstantService.index().then((response) => {
-        console.log(response.data);
-        Constant.$patch({ data: response.data });
-    })
-
+    
     next();
 });
 

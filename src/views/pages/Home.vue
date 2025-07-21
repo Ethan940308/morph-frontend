@@ -1,5 +1,5 @@
 <script setup>
-import TopbarWidget from '@/components/landing/TopbarWidget.vue';
+import TopbarWidget from '@/components/TopbarWidget.vue';
 </script>
 
 <template>
